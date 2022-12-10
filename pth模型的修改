@@ -1,0 +1,28 @@
+    state_dict = torch.load("/home/zhao/baidu/yolov5_new/best.pt_tmp")
+    state_old = torch.load("weights/yolov5s.pt")
+    i = 0
+    j = 0
+    for k, v in state_dict.items():     
+        if k == "model":
+            nlist = list(state_old.items())[j][1]
+            for name, param in v.named_parameters():
+                if name == "model.0.conv.conv.weight":      
+                    param.data = torch.cat((list(nlist.parameters())[i], list(nlist.parameters())[i]), 1)
+                else:
+                    param.data = list(nlist.parameters())[i]#param.data
+                print(i,len(list(nlist.parameters())), len(list(v.named_parameters())), list(nlist.parameters())[i].shape, param.data)
+                i = i + 1   
+        j = j + 1
+    #print(state_dict)
+    '''i = 0
+    j = 0
+    for k, v in state_dict.items():     
+        if k == "model":
+            nlist = list(state_old.items())[j][1]
+            for name, param in v.named_parameters():
+                print(i,len(list(nlist.parameters())), len(list(v.named_parameters())), list(nlist.parameters())[i].shape, param.data.shape)
+                i = i + 1  
+       # if k == "optimizer": 
+            # print(v) 
+        j = j + 1'''
+    torch.save(state_dict,  "newmodel6.pt")
